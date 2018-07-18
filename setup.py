@@ -10,7 +10,9 @@ URL = 'https://github.com/nadyafebi/horriblesubs_downloader'
 
 # Packages
 PACKAGES = find_packages(exclude=['*.tests'])
-REQUIRED = []
+REQUIRED = [
+    'docopt'
+]
 
 # CLI Settings
 COMMAND = 'hsd'
