@@ -13,13 +13,9 @@ chrome_options.add_argument("--log-level=3")
 chrome_driver = os.getcwd() + "\\chromedriver.exe"
 
 def getTorrent(name, episode, resolution=1080):
-    # Get HorribleSubs link
-    link = getLink(name)
-
-    # Create tag to be searched for
-    if int(episode) < 10:
-        episode = '0' + episode
-    tag = '{}-{}p'.format(episode, resolution)
+    # Get HorribleSubs link and tag
+    link = makeLink(name)
+    tag = makeTag(episode, resolution)
 
     # Open up browser
     browser = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
@@ -39,10 +35,15 @@ def getTorrent(name, episode, resolution=1080):
     browser.quit()
     return torrent_link
 
-def getLink(name):
+def makeLink(name):
     # Remove symbols
     name = re.sub(r'[^\w\s]', '', name)
     # Replace spaces with dash
     name = '-'.join(name.split())
     # Return HorribleSubs link
     return HORRIBLE + name
+
+def makeTag(episode, resolution):
+    if int(episode) < 10:
+        episode = '0' + episode
+    return '{}-{}p'.format(episode, resolution)
