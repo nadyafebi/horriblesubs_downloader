@@ -18,7 +18,7 @@ def main():
     if args['<name>'] and args['<episode>']:
         name = args['<name>']
         episode = args['<episode>']
-        print(scraper.getLink(name))
+        print(scraper.getTorrent(name, episode))
 
 if __name__ == '__main__':
     main()
