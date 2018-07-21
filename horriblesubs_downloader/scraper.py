@@ -21,15 +21,24 @@ def getTorrent(name, episode, resolution=1080):
     browser = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
     browser.get(link)
 
+    # Return if page not found
+    if browser.title == 'Page not found – HorribleSubs':
+        browser.quit()
+        return "ERROR: Page not found!"
+
     # Click 'Show More' button until it ends.
     show_more = browser.find_element_by_xpath("//div[@class='show-more']")
     while show_more.text != "The End":
         show_more.click()
 
     # Get the torrent link
-    q = "//div[@id='{}']//a[@title='Torrent Link']".format(tag)
-    episode_container = browser.find_element_by_xpath(q)
-    torrent_link = episode_container.get_attribute("href")
+    try:
+        q = "//div[@id='{}']//a[@title='Torrent Link']".format(tag)
+        episode_container = browser.find_element_by_xpath(q)
+        torrent_link = episode_container.get_attribute("href")
+    except:
+        browser.quit()
+        return "ERROR: Cannot find episode!"
 
     # Quit browser and return link
     browser.quit()
