@@ -22,12 +22,11 @@ class Scraper(object):
     def openBrowser(self):
         self.browser = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
         self.browser.get(makeLink(self.name))
-
-    def getTorrent(self):
         # Check if page is not found
         if 'not found' in self.browser.title:
             raise PageNotFound()
 
+    def getTorrent(self):
         # Click 'Show More' button until it ends.
         show_more = self.browser.find_element_by_xpath("//div[@class='show-more']")
         while show_more.text != "The End":

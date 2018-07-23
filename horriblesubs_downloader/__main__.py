@@ -34,15 +34,15 @@ def main():
         # Add resolution to info
         anime_info['resolution'] = 1080
 
-        # Create scraper and open it
-        scraper = Scraper(anime_info)
-        sys.stdout.write('Opening browser...')
-        sys.stdout.flush()
-        scraper.openBrowser()
-
-        # Get torrent link(s)
-        print('Getting torrent link(s)...')
         try:
+            # Create scraper and open it
+            scraper = Scraper(anime_info)
+            sys.stdout.write('Opening browser...')
+            sys.stdout.flush()
+            scraper.openBrowser()
+
+            # Get torrent link(s)
+            print('Getting torrent link(s)...')
             links = scraper.getTorrent()
             print(links)
         except Error as e:
