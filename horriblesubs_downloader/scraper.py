@@ -1,6 +1,7 @@
 import os, re
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from horriblesubs_downloader.error import PageNotFound, EpisodeNotFound
 
 HORRIBLE = 'https://horriblesubs.info/shows/'
 
@@ -24,9 +25,8 @@ class Scraper(object):
 
     def getTorrent(self):
         # Check if page is not found
-        if self.browser.title == 'Page not found - HorribleSubs':
-            self.browser.quit()
-            return 'ERROR: Page not found!'
+        if 'not found' in self.browser.title:
+            raise PageNotFound()
 
         # Click 'Show More' button until it ends.
         show_more = self.browser.find_element_by_xpath("//div[@class='show-more']")
@@ -42,8 +42,7 @@ class Scraper(object):
                 episode_container = self.browser.find_element_by_xpath(q)
                 links.append(episode_container.get_attribute("href"))
             except:
-                self.browser.quit()
-                return "ERROR: Cannot find episode!"
+                raise EpisodeNotFound()
 
         # Quit browser and return link
         self.browser.quit()

@@ -11,6 +11,7 @@ Options:
 
 from docopt import docopt
 from horriblesubs_downloader.scraper import Scraper
+from horriblesubs_downloader.error import Error
 import sys
 
 def main():
@@ -41,7 +42,12 @@ def main():
 
         # Get torrent link(s)
         print('Getting torrent link(s)...')
-        print(scraper.getTorrent())
+        try:
+            links = scraper.getTorrent()
+            print(links)
+        except Error as e:
+            scraper.browser.quit()
+            print('ERROR: ' + e.msg)
 
 if __name__ == '__main__':
     main()
