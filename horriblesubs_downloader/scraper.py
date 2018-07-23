@@ -1,4 +1,4 @@
-import os, sys, re
+import os, re
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
@@ -11,38 +11,43 @@ chrome_options.add_argument("--disable-gpu")
 chrome_options.add_argument("--log-level=3")
 chrome_driver = os.getcwd() + "\\chromedriver.exe"
 
-def getTorrent(name, episodes, resolution=1080):
-    # Open up browser
-    sys.stdout.write('Opening browser...')
-    sys.stdout.flush()
-    browser = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
-    browser.get(makeLink(name))
+class Scraper(object):
+    def __init__(self, anime_info):
+        self.name = anime_info['name']
+        self.episodes = anime_info['episodes']
+        self.resolution = anime_info['resolution']
+        self.browser = None
 
-    # Return if page not found
-    if browser.title == 'Page not found – HorribleSubs':
-        browser.quit()
-        return "ERROR: Page not found!"
+    def openBrowser(self):
+        self.browser = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
+        self.browser.get(makeLink(self.name))
 
-    # Click 'Show More' button until it ends.
-    show_more = browser.find_element_by_xpath("//div[@class='show-more']")
-    while show_more.text != "The End":
-        show_more.click()
+    def getTorrent(self):
+        # Check if page is not found
+        if self.browser.title == 'Page not found - HorribleSubs':
+            self.browser.quit()
+            return 'ERROR: Page not found!'
 
-    # Get the torrent link
-    links = []
-    for episode in episodes:
-        tag = makeTag(episode, resolution)
-        try:
-            q = "//div[@id='{}']//a[@title='Torrent Link']".format(tag)
-            episode_container = browser.find_element_by_xpath(q)
-            links.append(episode_container.get_attribute("href"))
-        except:
-            browser.quit()
-            return "ERROR: Cannot find episode!"
+        # Click 'Show More' button until it ends.
+        show_more = self.browser.find_element_by_xpath("//div[@class='show-more']")
+        while show_more.text != "The End":
+            show_more.click()
 
-    # Quit browser and return link
-    browser.quit()
-    return links
+        # Get the torrent link
+        links = []
+        for episode in self.episodes:
+            tag = makeTag(episode, self.resolution)
+            try:
+                q = "//div[@id='{}']//a[@title='Torrent Link']".format(tag)
+                episode_container = self.browser.find_element_by_xpath(q)
+                links.append(episode_container.get_attribute("href"))
+            except:
+                self.browser.quit()
+                return "ERROR: Cannot find episode!"
+
+        # Quit browser and return link
+        self.browser.quit()
+        return links
 
 def makeLink(name):
     # Remove symbols

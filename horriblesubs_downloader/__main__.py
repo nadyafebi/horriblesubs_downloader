@@ -10,22 +10,38 @@ Options:
 '''
 
 from docopt import docopt
-import horriblesubs_downloader.scraper as scraper
+from horriblesubs_downloader.scraper import Scraper
+import sys
 
 def main():
     args = docopt(__doc__)
 
     # Usage: hsd <name> <episode>
     if args['<name>']:
-        name = args['<name>']
+        # Add name to info
+        anime_info = {}
+        anime_info['name'] = args['<name>']
+
+        # Add episodes to info
         if args['<episode>']:
-            episode = int(args['<episode>'])
-            print(scraper.getTorrent(name, [episode]))
+            anime_info['episodes'] = [int(args['<episode>'])]
         if args['--batch']:
             start = int(args['<start>'])
             end = int(args['<end>'])
-            episodes = range(start, end + 1)
-            print(scraper.getTorrent(name, episodes))
+            anime_info['episodes'] = range(start, end + 1)
+
+        # Add resolution to info
+        anime_info['resolution'] = 1080
+
+        # Create scraper and open it
+        scraper = Scraper(anime_info)
+        sys.stdout.write('Opening browser...')
+        sys.stdout.flush()
+        scraper.openBrowser()
+
+        # Get torrent link(s)
+        print('Getting torrent link(s)...')
+        print(scraper.getTorrent())
 
 if __name__ == '__main__':
     main()
