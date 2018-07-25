@@ -10,7 +10,6 @@ chrome_options = Options()
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--disable-gpu")
 chrome_options.add_argument("--log-level=3")
-chrome_driver = os.getcwd() + "\\chromedriver.exe"
 
 class Scraper(object):
     def __init__(self, anime_info):
@@ -19,8 +18,8 @@ class Scraper(object):
         self.resolution = anime_info['resolution']
         self.browser = None
 
-    def openBrowser(self):
-        self.browser = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
+    def openBrowser(self, driver):
+        self.browser = webdriver.Chrome(chrome_options=chrome_options, executable_path=driver)
         self.browser.get(makeLink(self.name))
         # Check if page is not found
         if 'not found' in self.browser.title:

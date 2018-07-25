@@ -4,6 +4,7 @@ HorribleSubs Downloader
 Usage:
     hsd <name> <episode>
     hsd <name> --batch <start> <end>
+    hsd --config <key> <value>
 
 Options:
     -h --help   Show this screen.
@@ -12,10 +13,16 @@ Options:
 from docopt import docopt
 from horriblesubs_downloader.scraper import Scraper
 from horriblesubs_downloader.error import Error
-import sys
+import configparser
+import os, sys
 
 def main():
     args = docopt(__doc__)
+
+    # Open config
+    config_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config.ini')
+    config = configparser.ConfigParser()
+    config.read(config_file)
 
     # Usage: hsd <name> <episode>
     if args['<name>']:
@@ -39,7 +46,8 @@ def main():
             scraper = Scraper(anime_info)
             sys.stdout.write('Opening browser...')
             sys.stdout.flush()
-            scraper.openBrowser()
+            driver = config['DEFAULT']['driver_path']
+            scraper.openBrowser(driver)
 
             # Get torrent link(s)
             print('Getting torrent link(s)...')
@@ -48,6 +56,11 @@ def main():
         except Error as e:
             scraper.browser.quit()
             print('ERROR: ' + e.msg)
+
+    # Usage: hsd --config <key> <value>
+    if args['--config']:
+        config['DEFAULT'][args['<key>']] = args['<value>']
+        config.write(open(config_file, 'w'))
 
 if __name__ == '__main__':
     main()
