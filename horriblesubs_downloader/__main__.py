@@ -12,7 +12,7 @@ Options:
 
 from docopt import docopt
 from horriblesubs_downloader.scraper import Scraper
-from horriblesubs_downloader.error import Error
+from horriblesubs_downloader.error import Error, DriverNotFound
 import configparser
 import os, sys
 
@@ -25,6 +25,7 @@ def main():
     config.read(config_file)
 
     # Usage: hsd <name> <episode>
+    #        hsd <name> --batch <start> <end>
     if args['<name>']:
         # Add name to info
         anime_info = {}
@@ -41,12 +42,21 @@ def main():
         # Add resolution to info
         anime_info['resolution'] = 1080
 
+        # Create scraper
+        scraper = Scraper(anime_info)
+
         try:
-            # Create scraper and open it
-            scraper = Scraper(anime_info)
+            # Get driver
+            try:
+                driver = config['DEFAULT']['driver_path']
+                if not driver:
+                    raise DriverNotFound()
+            except:
+                raise DriverNotFound()
+
+            # Open scraper
             sys.stdout.write('Opening browser...')
             sys.stdout.flush()
-            driver = config['DEFAULT']['driver_path']
             scraper.openBrowser(driver)
 
             # Get torrent link(s)
@@ -54,7 +64,8 @@ def main():
             links = scraper.getTorrent()
             print(links)
         except Error as e:
-            scraper.browser.quit()
+            if scraper.browser:
+                scraper.browser.quit()
             print('ERROR: ' + e.msg)
 
     # Usage: hsd --config <key> <value>
