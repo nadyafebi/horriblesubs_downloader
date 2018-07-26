@@ -4,6 +4,7 @@ HorribleSubs Downloader
 Usage:
     hsd <name> <episode> [--res <res>] [(--to <path>)]
     hsd <name> --batch <start> <end> [--res <res>] [(--to <path>)]
+    hsd --alias [<alias>] [<real>]
     hsd --config [<key>] [<value>]
 
 Options:
@@ -11,6 +12,7 @@ Options:
     -b --batch          Download multiple torrents.
     -r --res <res>      Set resolution.
     -t --to <path>      Download file to path.
+    -a --alias          Set alias to an anime name.
     -c --config         Display or set config.
 '''
 
@@ -34,9 +36,12 @@ def main():
         # Usage: hsd <name> <episode>
         #        hsd <name> --batch <start> <end>
         if args['<name>']:
-            # Create anime info
+            # Get name
             anime_info = {}
-            anime_info['name'] = args['<name>']
+            name = args['<name>']
+            if name in config['ALIAS']:
+                name = config['ALIAS'][name]
+            anime_info['name'] = name
 
             # Get episode(s)
             if args['<episode>']:
@@ -48,7 +53,7 @@ def main():
 
             # Get resolution
             try:
-                resolution = args['--res'] or config['DEFAULT']['resolution']
+                resolution = args['--res'] or config['CONFIG']['resolution']
             except KeyError:
                 raise ResolutionNotSpecified()
             if not resolution:
@@ -57,7 +62,7 @@ def main():
 
             # Get driver
             try:
-                driver = config['DEFAULT']['driver_path']
+                driver = config['CONFIG']['driver_path']
             except:
                 raise DriverNotFound()
             if not driver:
@@ -79,25 +84,38 @@ def main():
             print('Downloading torrent file(s)...')
             downloader = Downloader(anime_info)
             try:
-                destination = args['--to'] or config['DEFAULT']['download_path']
+                destination = args['--to'] or config['CONFIG']['download_path']
             except KeyError:
                 raise DownloadPathNotSpecified()
             if not destination:
                 raise DownloadPathNotSpecified()
             downloader.download(destination)
 
+        # Usage: hsd --alias [<alias>] [<real>]
+        if args['--alias']:
+            alias = args['<alias>']
+            real = args['<real>']
+            if alias and real:
+                config['ALIAS'][alias] = real
+                config.write(open(config_file, 'w'))
+            elif alias:
+                print(config['ALIAS'][alias])
+            else:
+                for alias in config['ALIAS']:
+                    print('{} = {}'.format(alias, config['ALIAS'][alias]))
+
         # Usage: hsd --config [<key>] [<value>]
         if args['--config']:
             key = args['<key>']
             value = args['<value>']
             if key and value:
-                config['DEFAULT'][key] = value
+                config['CONFIG'][key] = value
                 config.write(open(config_file, 'w'))
             elif key:
-                print(config['DEFAULT'][key])
+                print(config['CONFIG'][key])
             else:
-                for key in config['DEFAULT']:
-                    print('{} = {}'.format(key, config['DEFAULT'][key]))
+                for key in config['CONFIG']:
+                    print('{} = {}'.format(key, config['CONFIG'][key]))
 
     except Error as e:
         print('ERROR:', e.msg)
