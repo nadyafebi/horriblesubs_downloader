@@ -23,6 +23,7 @@ import os, sys
 def main():
     args = docopt(__doc__)
 
+    browser = None
     try:
         # Open config
         config_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config.ini')
@@ -56,6 +57,7 @@ def main():
             sys.stdout.write('Opening browser...')
             sys.stdout.flush()
             scraper.openBrowser(driver)
+            browser = scraper.browser
 
             # Get torrent link(s)
             print('Getting torrent link(s)...')
@@ -90,8 +92,12 @@ def main():
         print('ERROR:', e.msg)
         if e.help:
             print(e.help)
-        if hasattr(e, 'browser'):
-            e.browser.quit()
+        if browser:
+            browser.quit()
+    except KeyboardInterrupt:
+        if browser:
+            browser.quit()
+        print('Task canceled.')
 
 if __name__ == '__main__':
     main()
