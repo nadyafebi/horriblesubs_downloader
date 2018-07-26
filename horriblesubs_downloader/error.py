@@ -4,12 +4,14 @@ class Error(Exception):
         self.help = help
 
 class PageNotFound(Error):
-    def __init__(self):
+    def __init__(self, browser):
         Error.__init__(self, 'Page not found!')
+        self.browser = browser
 
 class EpisodeNotFound(Error):
-    def __init__(self):
+    def __init__(self, browser):
         Error.__init__(self, 'Episode not found!')
+        self.browser = browser
 
 class DriverNotFound(Error):
     def __init__(self):

@@ -23,7 +23,7 @@ class Scraper(object):
         self.browser.get(makeLink(self.name))
         # Check if page is not found
         if 'not found' in self.browser.title:
-            raise PageNotFound()
+            raise PageNotFound(self.browser)
 
     def getTorrent(self):
         # Click 'Show More' button until it ends.
@@ -40,7 +40,7 @@ class Scraper(object):
                 episode_container = self.browser.find_element_by_xpath(q)
                 links.append(episode_container.get_attribute("href"))
             except:
-                raise EpisodeNotFound()
+                raise EpisodeNotFound(self.browser)
 
         # Quit browser and return link
         self.browser.quit()
