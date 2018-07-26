@@ -4,10 +4,12 @@ HorribleSubs Downloader
 Usage:
     hsd <name> <episode>
     hsd <name> --batch <start> <end>
-    hsd --config <key> <value>
+    hsd --config [<key>] [<value>]
 
 Options:
-    -h --help   Show this screen.
+    -h --help       Show this screen.
+    -b --batch      Download multiple torrents.
+    -c --config     Display or set config.
 '''
 
 from docopt import docopt
@@ -67,11 +69,21 @@ def main():
             if scraper.browser:
                 scraper.browser.quit()
             print('ERROR: ' + e.msg)
+            if (e.help):
+                print(e.help)
 
-    # Usage: hsd --config <key> <value>
+    # Usage: hsd --config [<key>] [<value>]
     if args['--config']:
-        config['DEFAULT'][args['<key>']] = args['<value>']
-        config.write(open(config_file, 'w'))
+        key = args['<key>']
+        value = args['<value>']
+        if key and value:
+            config['DEFAULT'][key] = value
+            config.write(open(config_file, 'w'))
+        elif key:
+            print(config['DEFAULT'][key])
+        else:
+            for key in config['DEFAULT']:
+                print('{} = {}'.format(key, config['DEFAULT'][key]))
 
 if __name__ == '__main__':
     main()
