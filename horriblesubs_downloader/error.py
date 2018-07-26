@@ -16,3 +16,7 @@ class EpisodeNotFound(Error):
 class DriverNotFound(Error):
     def __init__(self):
         Error.__init__(self, 'Driver not found!', "To set driver, type 'hsd --config driver_path <PATH>'")
+
+class DownloadPathNotSpecified(Error):
+    def __init__(self):
+        Error.__init__(self, 'Download path not specified!', "Set path by adding '--to <PATH>' at the end of the command or typing 'hsd --config download_path <PATH>'")

@@ -2,19 +2,21 @@
 HorribleSubs Downloader
 
 Usage:
-    hsd <name> <episode>
-    hsd <name> --batch <start> <end>
+    hsd <name> <episode> [(--to <path>)]
+    hsd <name> --batch <start> <end> [(--to <path>)]
     hsd --config [<key>] [<value>]
 
 Options:
-    -h --help       Show this screen.
-    -b --batch      Download multiple torrents.
-    -c --config     Display or set config.
+    -h --help           Show this screen.
+    -b --batch          Download multiple torrents.
+    -c --config         Display or set config.
+    -t --to <path>      Download file to path.
 '''
 
 from docopt import docopt
 from horriblesubs_downloader.scraper import Scraper
-from horriblesubs_downloader.error import Error, DriverNotFound
+from horriblesubs_downloader.downloader import Downloader
+from horriblesubs_downloader.error import Error, DriverNotFound, DownloadPathNotSpecified
 import configparser
 import os, sys
 
@@ -41,7 +43,6 @@ def main():
                 anime_info['episodes'] = range(start, end + 1)
             anime_info['resolution'] = 1080
 
-            # Create scraper
             # Get driver
             try:
                 driver = config['DEFAULT']['driver_path']
@@ -59,7 +60,18 @@ def main():
             # Get torrent link(s)
             print('Getting torrent link(s)...')
             links = scraper.getTorrent()
-            print(links)
+            anime_info['links'] = links
+
+            # Download link(s)
+            print('Downloading torrent file(s)...')
+            downloader = Downloader(anime_info)
+            try:
+                destination = args['--to'] or config['DEFAULT']['download_path']
+            except KeyError:
+                raise DownloadPathNotSpecified()
+            if not destination:
+                raise DownloadPathNotSpecified()
+            downloader.download(destination)
 
         # Usage: hsd --config [<key>] [<value>]
         if args['--config']:
