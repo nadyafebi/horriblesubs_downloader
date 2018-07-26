@@ -2,21 +2,22 @@
 HorribleSubs Downloader
 
 Usage:
-    hsd <name> <episode> [(--to <path>)]
-    hsd <name> --batch <start> <end> [(--to <path>)]
+    hsd <name> <episode> [--res <res>] [(--to <path>)]
+    hsd <name> --batch <start> <end> [--res <res>] [(--to <path>)]
     hsd --config [<key>] [<value>]
 
 Options:
     -h --help           Show this screen.
     -b --batch          Download multiple torrents.
-    -c --config         Display or set config.
+    -r --res <res>      Set resolution.
     -t --to <path>      Download file to path.
+    -c --config         Display or set config.
 '''
 
 from docopt import docopt
 from horriblesubs_downloader.scraper import Scraper
 from horriblesubs_downloader.downloader import Downloader
-from horriblesubs_downloader.error import Error, DriverNotFound, DownloadPathNotSpecified
+from horriblesubs_downloader.error import *
 import configparser
 import os, sys
 
@@ -36,20 +37,30 @@ def main():
             # Create anime info
             anime_info = {}
             anime_info['name'] = args['<name>']
+
+            # Get episode(s)
             if args['<episode>']:
                 anime_info['episodes'] = [int(args['<episode>'])]
             if args['--batch']:
                 start = int(args['<start>'])
                 end = int(args['<end>'])
                 anime_info['episodes'] = range(start, end + 1)
-            anime_info['resolution'] = 1080
+
+            # Get resolution
+            try:
+                resolution = args['--res'] or config['DEFAULT']['resolution']
+            except KeyError:
+                raise ResolutionNotSpecified()
+            if not resolution:
+                raise ResolutionNotSpecified()
+            anime_info['resolution'] = resolution
 
             # Get driver
             try:
                 driver = config['DEFAULT']['driver_path']
-                if not driver:
-                    raise DriverNotFound()
             except:
+                raise DriverNotFound()
+            if not driver:
                 raise DriverNotFound()
 
             # Create and open scraper
