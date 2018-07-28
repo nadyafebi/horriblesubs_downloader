@@ -56,7 +56,11 @@ def main():
 
             # Get resolution
             try:
-                resolution = args['--res'] or config['CONFIG']['resolution']
+                resolution = int(args['--res']) or int(config['CONFIG']['resolution'])
+                if resolution not in [480, 720, 1080]:
+                    raise ResolutionNumberInvalid()
+            except ValueError:
+                raise ResolutionNumberInvalid()
             except KeyError:
                 raise ResolutionNotSpecified()
             if not resolution:

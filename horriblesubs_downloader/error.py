@@ -10,6 +10,10 @@ class EpisodeNumberInvalid(Error):
     def __init__(self):
         Error.__init__(self, 'Episode number invalid!', 'Episode must be a positive integer.')
 
+class ResolutionNumberInvalid(Error):
+    def __init__(self):
+        Error.__init__(self, 'Resolution number invalid!', 'Resolution must be 480/720/1080.')
+
 class ResolutionNotSpecified(Error):
     def __init__(self):
         Error.__init__(self, 'Resolution not specified!', "Set resolution by adding '--res <RES>' at the end of the command or typing 'hsd --config resolution <RES>'")
