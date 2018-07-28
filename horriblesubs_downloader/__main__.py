@@ -44,12 +44,15 @@ def main():
             anime_info['name'] = name
 
             # Get episode(s)
-            if args['<episode>']:
-                anime_info['episodes'] = [int(args['<episode>'])]
-            if args['--batch']:
-                start = int(args['<start>'])
-                end = int(args['<end>'])
-                anime_info['episodes'] = range(start, end + 1)
+            try:
+                if args['<episode>']:
+                    anime_info['episodes'] = [int(args['<episode>'])]
+                if args['--batch']:
+                    start = int(args['<start>'])
+                    end = int(args['<end>'])
+                    anime_info['episodes'] = range(start, end + 1)
+            except ValueError:
+                raise EpisodeNumberInvalid()
 
             # Get resolution
             try:
