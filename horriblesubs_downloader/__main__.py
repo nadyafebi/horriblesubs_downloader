@@ -21,6 +21,7 @@ from horriblesubs_downloader.scraper import Scraper
 from horriblesubs_downloader.downloader import Downloader
 from horriblesubs_downloader.error import *
 import configparser
+from clint.textui import colored
 import os, sys, time, threading, itertools
 
 def main():
@@ -79,7 +80,7 @@ def main():
 
             # Create and open scraper
             scraper = Scraper(anime_info)
-            sys.stdout.write('Opening browser...')
+            sys.stdout.write(colored.green('V') + ' ' + 'Opening browser...')
             sys.stdout.flush()
             scraper.openBrowser(driver)
             browser = scraper.browser
@@ -136,7 +137,7 @@ def main():
             browser.quit()
         if spinner:
             spinner.stop(False)
-        print('ERROR:', e.msg)
+        print(colored.red('ERROR:'), e.msg)
         if e.help:
             print(e.help)
     except KeyboardInterrupt:
@@ -156,7 +157,7 @@ class Spinner:
 
     def spin(self):
         while self.spinning:
-            sys.stdout.write(next(self.spinner) + ' ' + self.msg)
+            sys.stdout.write(colored.cyan(next(self.spinner)) + ' ' + self.msg)
             sys.stdout.flush()
             time.sleep(self.delay)
             sys.stdout.write('\r')
@@ -170,9 +171,9 @@ class Spinner:
         self.spinning = False
         time.sleep(self.delay)
         if success:
-            print('V', self.msg)
+            print(colored.green('V'), self.msg)
         else:
-            print('X', self.msg)
+            print(colored.red('X'), self.msg)
 
 
 if __name__ == '__main__':
