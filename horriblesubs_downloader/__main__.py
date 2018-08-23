@@ -21,12 +21,13 @@ from horriblesubs_downloader.scraper import Scraper
 from horriblesubs_downloader.downloader import Downloader
 from horriblesubs_downloader.error import *
 import configparser
-import os, sys
+import os, sys, time, threading, itertools
 
 def main():
     args = docopt(__doc__)
 
     browser = None
+    spinner = None
     try:
         # Open config
         config_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config.ini')
@@ -84,12 +85,16 @@ def main():
             browser = scraper.browser
 
             # Get torrent link(s)
-            print('Getting torrent link(s)...')
+            spinner = Spinner('Getting torrent link(s)...')
+            spinner.start()
+            #print('Getting torrent link(s)...')
             links = scraper.getTorrent()
             anime_info['links'] = links
+            spinner.stop(True)
 
             # Download link(s)
-            print('Downloading torrent file(s)...')
+            spinner = Spinner('Downloading torrent file(s)...')
+            spinner.start()
             downloader = Downloader(anime_info)
             try:
                 destination = args['--to'] or config['CONFIG']['download_path']
@@ -98,6 +103,7 @@ def main():
             if not destination:
                 raise DownloadPathNotSpecified()
             downloader.download(destination)
+            spinner.stop(True)
 
         # Usage: hsd --alias [<alias>] [<real>]
         if args['--alias']:
@@ -126,15 +132,48 @@ def main():
                     print('{} = {}'.format(key, config['CONFIG'][key]))
 
     except Error as e:
+        if browser:
+            browser.quit()
+        if spinner:
+            spinner.stop(False)
         print('ERROR:', e.msg)
         if e.help:
             print(e.help)
-        if browser:
-            browser.quit()
     except KeyboardInterrupt:
         if browser:
             browser.quit()
+        if spinner:
+            spinner.stop(False)
         print('Task canceled.')
+
+class Spinner:
+    spinner = itertools.cycle(['-', '/', '|', '\\'])
+
+    def __init__(self, msg=None, delay=0.1):
+        self.msg = msg
+        self.delay = delay
+        self.spinning = False
+
+    def spin(self):
+        while self.spinning:
+            sys.stdout.write(next(self.spinner) + ' ' + self.msg)
+            sys.stdout.flush()
+            time.sleep(self.delay)
+            sys.stdout.write('\r')
+            sys.stdout.flush()
+
+    def start(self):
+        self.spinning = True
+        threading.Thread(target=self.spin).start()
+
+    def stop(self, success):
+        self.spinning = False
+        time.sleep(self.delay)
+        if success:
+            print('V', self.msg)
+        else:
+            print('X', self.msg)
+
 
 if __name__ == '__main__':
     main()
