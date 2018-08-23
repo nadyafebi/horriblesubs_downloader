@@ -18,8 +18,10 @@ class Scraper(object):
         self.resolution = anime_info['resolution']
         self.browser = None
 
-    def openBrowser(self, driver):
+    def createBrowser(self, driver):
         self.browser = webdriver.Chrome(chrome_options=chrome_options, executable_path=driver)
+
+    def openBrowser(self):
         self.browser.get(makeLink(self.name))
         # Check if page is not found
         if 'not found' in self.browser.title:

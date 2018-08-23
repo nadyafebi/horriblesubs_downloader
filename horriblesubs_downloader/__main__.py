@@ -82,8 +82,13 @@ def main():
             scraper = Scraper(anime_info)
             sys.stdout.write(colored.green('V') + ' ' + 'Opening browser...')
             sys.stdout.flush()
-            scraper.openBrowser(driver)
+            scraper.createBrowser(driver)
             browser = scraper.browser
+
+            spinner = Spinner('Opening page...')
+            spinner.start()
+            scraper.openBrowser()
+            spinner.stop(True)
 
             # Get torrent link(s)
             spinner = Spinner('Getting torrent link(s)...')
