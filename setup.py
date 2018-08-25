@@ -11,7 +11,11 @@ URL = 'https://github.com/nadyafebi/horriblesubs_downloader'
 # Packages
 PACKAGES = find_packages(exclude=['*.tests'])
 REQUIRED = [
-    'docopt'
+    'docopt',
+    'configparser',
+    'clint',
+    'selenium',
+    'urllib.request'
 ]
 
 # CLI Settings
