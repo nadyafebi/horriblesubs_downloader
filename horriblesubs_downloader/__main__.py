@@ -123,7 +123,10 @@ def main():
                 config['ALIAS'][alias] = real
                 config.write(open(config_file, 'w'))
             elif alias:
-                print(config['ALIAS'][alias])
+                try:
+                    print(config['ALIAS'][alias])
+                except KeyError:
+                    raise AliasInvalid()
             else:
                 for alias in config['ALIAS']:
                     print('{} = {}'.format(alias, config['ALIAS'][alias]))

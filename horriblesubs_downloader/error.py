@@ -26,6 +26,10 @@ class DownloadPathNotSpecified(Error):
         Error.__init__(self, 'Download path not specified!',
                              "Set path by adding '--to <PATH>' at the end of the command or typing 'hsd --config download_path <PATH>'")
 
+class AliasInvalid(Error):
+    def __init__(self):
+        Error.__init__(self, 'Alias does not exist!')
+
 class ConfigKeyInvalid(Error):
     def __init__(self):
         Error.__init__(self, 'Config key invalid!',
