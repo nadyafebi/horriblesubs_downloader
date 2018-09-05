@@ -136,7 +136,10 @@ def main():
                 config['CONFIG'][key] = value
                 config.write(open(config_file, 'w'))
             elif key:
-                print(config['CONFIG'][key])
+                try:
+                    print(config['CONFIG'][key])
+                except KeyError:
+                    raise ConfigKeyInvalid()
             else:
                 for key in config['CONFIG']:
                     print('{} = {}'.format(key, config['CONFIG'][key]))
@@ -148,7 +151,7 @@ def main():
             spinner.stop(False)
         print(colored.red('ERROR:'), e.msg)
         if e.help:
-            print(e.help)
+            print('       ' + e.help)
     except KeyboardInterrupt:
         if browser:
             browser.quit()
