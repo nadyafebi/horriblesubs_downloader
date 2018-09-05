@@ -22,6 +22,7 @@ from horriblesubs_downloader.downloader import Downloader
 from horriblesubs_downloader.error import *
 import configparser
 from clint.textui import colored
+from shutil import copyfile
 import os, sys, time, threading, itertools
 
 def main():
@@ -32,6 +33,9 @@ def main():
     try:
         # Open config
         config_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config.ini')
+        if not os.path.isfile(config_file):
+            config_template = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config-template.ini')
+            copyfile(config_template, config_file)
         config = configparser.ConfigParser()
         config.read(config_file)
 
