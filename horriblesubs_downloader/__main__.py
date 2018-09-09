@@ -2,8 +2,9 @@
 HorribleSubs Downloader
 
 Usage:
-    hsd <name> <episode> [--res <res>] [(--to <path>)]
-    hsd <name> --batch <start> <end> [--res <res>] [(--to <path>)]
+    hsd <name> <episode> [--res <res>] [--to <path>]
+    hsd <name> <start> <end> [--res <res>] [--to <path>]
+    hsd <name> --batch [--res <res>] [--to <path>]
     hsd --alias [<alias>] [<real>]
     hsd --config [<key>] [<value>]
 
@@ -40,7 +41,8 @@ def main():
         config.read(config_file)
 
         # Usage: hsd <name> <episode>
-        #        hsd <name> --batch <start> <end>
+        #        hsd <name> <start> <end>
+        #        hsd <name> --batch
         if args['<name>']:
             # Get name
             anime_info = {}
@@ -53,10 +55,12 @@ def main():
             try:
                 if args['<episode>']:
                     anime_info['episodes'] = [int(args['<episode>'])]
-                if args['--batch']:
+                if args['<start>'] and args['<end>']:
                     start = int(args['<start>'])
                     end = int(args['<end>'])
                     anime_info['episodes'] = range(start, end + 1)
+                if args['--batch']:
+                    anime_info['episodes'] = []
             except ValueError:
                 raise EpisodeNumberInvalid()
 
@@ -97,7 +101,6 @@ def main():
             # Get torrent link(s)
             spinner = Spinner('Getting torrent link(s)...')
             spinner.start()
-            #print('Getting torrent link(s)...')
             links = scraper.getTorrent()
             anime_info['links'] = links
             spinner.stop(True)
