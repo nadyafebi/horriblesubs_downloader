@@ -9,6 +9,8 @@ class Downloader(object):
         self.links = anime_info['links']
 
     def download(self, folder):
+        if self.episodes == 'batch':
+            self.episodes = range(1, len(self.links) + 1)
         pairs = zip(self.episodes, self.links)
         for pair in pairs:
             episode = int(pair[0])

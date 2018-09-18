@@ -60,7 +60,7 @@ def main():
                     end = int(args['<end>'])
                     anime_info['episodes'] = range(start, end + 1)
                 if args['--batch']:
-                    anime_info['episodes'] = []
+                    anime_info['episodes'] = 'batch'
             except ValueError:
                 raise EpisodeNumberInvalid()
 

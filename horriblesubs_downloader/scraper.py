@@ -35,12 +35,24 @@ class Scraper(object):
 
         # Get the torrent link
         links = []
-        for episode in self.episodes:
-            tag = makeTag(episode, self.resolution)
+        if self.episodes == 'batch':
+            episode = 1
             try:
-                q = "//div[@id='{}']//a[@title='Torrent Link']".format(tag)
-                episode_container = self.browser.find_element_by_xpath(q)
-                links.append(episode_container.get_attribute("href"))
+                while True:
+                    tag = makeTag(episode, self.resolution)
+                    q = "//div[@id='{}']//a[@title='Torrent Link']".format(tag)
+                    episode_container = self.browser.find_element_by_xpath(q)
+                    links.append(episode_container.get_attribute("href"))
+                    episode += 1
+            except:
+                pass
+        else:
+            try:
+                for episode in self.episodes:
+                    tag = makeTag(episode, self.resolution)
+                    q = "//div[@id='{}']//a[@title='Torrent Link']".format(tag)
+                    episode_container = self.browser.find_element_by_xpath(q)
+                    links.append(episode_container.get_attribute("href"))
             except:
                 raise EpisodeNotFound()
 
