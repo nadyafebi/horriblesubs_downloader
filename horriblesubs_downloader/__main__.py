@@ -13,7 +13,7 @@ Options:
     -b --batch          Download multiple torrents.
     -r --res <res>      Set resolution.
     -t --to <path>      Download file to path.
-    -a --alias          Set alias to an anime name.
+    -a --alias          Display or set alias.
     -c --config         Display or set config.
 '''
 
