@@ -3,39 +3,35 @@
 A simple anime torrent downloader.
 
 **Features:**
+
 * Quickly download anime torrents from HorribleSubs in your terminal.
 * Download the whole season in a single command.
 * Use alias for anime with long name.
 
 *Note: The downloader doesn't work for older anime that has no torrent link. Support for magnet link will be added in the future.*
 
-***
+---
 
 **Table of Contents**
+
 * [Installation](#installation)
 * [Usage](#usage)
 * [License](#license)
 
-***
+---
 
 ## Installation
 
 You need [Python 3.x.x](https://www.python.org/downloads/) to install and use the downloader.
 
-```bash
-pip install horriblesubs_downloader
+```
+pip install horriblesubs-downloader
 ```
 
 1. Download [chromedriver](http://chromedriver.chromium.org/downloads) and extract out the file inside the ZIP.
-1. Type in your terminal:<br>
-  `hsd --config driver_path <PATH TO CHROMEDRIVER>`<br>
-  Example:<br>
-  `hsd --config driver_path 'C:\Users\me\Documents\chromedriver.exe'`<br>
-1. Set your download path:<br>
-  `hsd --config download_path <PATH>`<br>
-  Example:<br>
-  `hsd --config download_path 'C:\Users\me\Downloads\Torrent'`<br>
-1. You're all set!
+1. Type in your terminal: `hsd --config driver_path <PATH TO CHROMEDRIVER>`
+1. Set your download path: `hsd --config download_path <PATH>`
+1. You're ready to download some anime!
 
 ## Usage
 
@@ -57,7 +53,7 @@ Options:
 ```
 
 **Examples**
-```bash
+```
 # Download episode 5 of One Punch Man
 hsd "One Punch Man" 5
 
