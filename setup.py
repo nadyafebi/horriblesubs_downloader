@@ -14,8 +14,7 @@ REQUIRED = [
     'docopt',
     'configparser',
     'clint',
-    'selenium',
-    'urllib.request'
+    'selenium'
 ]
 
 # CLI Settings
