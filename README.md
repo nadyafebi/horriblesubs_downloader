@@ -23,6 +23,7 @@ A simple anime torrent downloader.
 ## Installation
 
 You need [Python 3.x.x](https://www.python.org/downloads/) to install and use the downloader.
+You also need Google Chrome (*Support for Firefox and other browsers will be added in the future*).
 
 ```
 pip install horriblesubs-downloader
