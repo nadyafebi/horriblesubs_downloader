@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 # Metadata
 NAME = 'horriblesubs_downloader'
-VERSION = '1.0'
+VERSION = '1.0.1'
 DESCRIPTION = 'A simple anime torrent downloader.'
 AUTHOR = 'Nadya Djojosantoso'
 EMAIL = 'hello@nadyafebi.com'
