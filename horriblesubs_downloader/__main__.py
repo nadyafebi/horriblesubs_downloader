@@ -35,8 +35,7 @@ def main():
         # Open config
         config_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config.ini')
         if not os.path.isfile(config_file):
-            config_template = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config-template.ini')
-            copyfile(config_template, config_file)
+            createConfig(config_file)
         config = configparser.ConfigParser()
         config.read(config_file)
 
@@ -164,6 +163,14 @@ def main():
         if spinner:
             spinner.stop(False)
         print('Task canceled.')
+
+def createConfig(file):
+    f = open(file, 'w')
+    f.write('[CONFIG]\n')
+    f.write('driver_path = \n')
+    f.write('download_path = \n')
+    f.write('resolution = \n\n')
+    f.write('[ALIAS]\n')
 
 class Spinner:
     spinner = itertools.cycle(['-', '/', '|', '\\'])
